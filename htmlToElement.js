@@ -14,6 +14,18 @@ var LINE_BREAK = '\n'
 var PARAGRAPH_BREAK = '\n\n'
 var BULLET = '\u2022 '
 
+// Function which returns true if the node is preceded by another node with the specified tag
+function precededBy(tag, node, list) {
+  let index = list.indexOf(node);
+
+  if(index <= 0){
+    return false;
+  }
+
+  return list[index - 1].name == tag;
+}
+
+
 function htmlToElement(rawHtml, opts, done) {
   function domToElement(dom, parent) {
     if (!dom) return null
@@ -60,6 +72,7 @@ function htmlToElement(rawHtml, opts, done) {
         return (
           <Text key={index} onPress={linkPressHandler}>
             {node.name == 'pre' ? LINE_BREAK : null}
+            {node.name == 'li' && !precededBy('li', node, list) ? LINE_BREAK : null}
             {node.name == 'li' ? BULLET : null}
             {domToElement(node.children, node)}
             {node.name == 'br' ? LINE_BREAK : null}
